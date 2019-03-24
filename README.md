@@ -2,6 +2,8 @@
 
 Spock encounters many puzzling situations which he must overcome with his only weapon: Logic.
 
+[Play the game here.](https://timothypratley.github.io/you-are-spock)
+
 ## Overview
 
 This is a game built to explore the suitability of the `entity` abstraction from DataScript.
