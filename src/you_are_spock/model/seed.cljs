@@ -6,6 +6,18 @@
    {:enum/exits [:direction/north :direction/south :direction/east :direction/west :direction/up :direction/down]}
    {:enum/difficulty [:difficulty/easy :difficulty/moderate :difficulty/hard]}
 
+   {:db/id -100
+    :character/name "A"}
+   {:db/id -101
+    :character/name "B"
+    :entity/parent -100}
+   {:db/id -102
+    :character/name "C"
+    :entity/parent -101}
+   {:db/id -103
+    :character/name "D"
+    :entity/parent -102}
+
    {:db/id -9
     :room/name "a green field"
     :room/description "The grass is lush here."}

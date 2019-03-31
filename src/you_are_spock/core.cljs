@@ -5,8 +5,9 @@
             [you-are-spock.view.main :as view.main]
             [datascript.core :as d]))
 
-;; app-state directly follows the db
-(defonce app-state (reagent/atom @model/conn))
+;; app-state is a reactive copy of db
+(defonce app-state
+  (reagent/atom @model/conn))
 
 (d/listen! model/conn ::tx
            (fn [tx-report]

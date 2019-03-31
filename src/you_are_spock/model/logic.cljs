@@ -1,5 +1,5 @@
 (ns you-are-spock.model.logic
-  (:require [clojure.string :as string]
+  (:require [you-are-spock.utils :as utils]
             [datascript.core :as d]))
 
 (defn exits [character]
@@ -7,20 +7,6 @@
     (for [link portal-links]
       {:name (:portal/name (:portal/_links link))
        :direction (:portal.link/direction link)})))
-
-(defn usable-exits [character]
-  (and
-    (= (:character/posture character) :posture/standing)
-    (when-let [room (:entity/location character)]
-      (let [portal-links (:portal.link/_from room)]
-        (for [portal-link portal-links
-              :let [destination (:portal.link/to portal-link)
-                    portal (:portal/_links portal-link)]
-              :when destination
-              :when (not (:portal/closed portal))
-              :when (>= (:room/size destination 10)
-                        (count (:entity/_location destination)))]
-          portal-link)))))
 
 (defn exit? [character direction]
   [;; must not be fighting, must be standing (is fighting a posture?)
@@ -70,15 +56,62 @@
 (defn move [conn character destination]
   (d/transact! conn [[:db/add (:db/id character) :entity/location (:db/id destination)]]))
 
-(defn fn-name [f]
-  (-> f
-      (.-name)
-      (demunge)
-      (string/split #"/")
-      (last)))
+(defn open [conn character target]
+  (d/transact! conn [[:db/remove (:db/id target) :portal/closed]]))
+
+(defn dexterity-check [character difficulty]
+  (< (rand-int 12) 10))
+
+(defn damage [conn character d]
+  (d/transact! conn [[:db/add (:db/id character) :character/hit-points 5]]))
+
+(defn climb [conn character portal-link]
+  (let [portal (:portal/_links portal-link)
+        difficulty (:portal/climbable portal)]
+    (if (dexterity-check character difficulty)
+      (move conn character (:portal.link/to portal-link))
+      (damage conn character 2))))
+
+(defn f [character]
+  (when-let [room (:entity/location character)]
+    (let [portal-links (:portal.link/_from room)]
+      (for [portal-link portal-links
+            :let [destination (:portal.link/to portal-link)
+                  portal (:portal/_links portal-link)]
+            :when destination
+            :when (not (:portal/closed portal))
+            :when (>= (:room/size destination 10)
+                      (count (:entity/_location destination)))]
+        portal-link))))
+
+(defn usable-exits [character]
+  (when-let [location (:entity/location character)]
+    (let [portal-links (:portal.link/_from location)]
+      (for [portal-link portal-links
+            :let [destination (:portal.link/to portal-link)
+                  portal (:portal/_links portal-link)]
+            :when destination
+            :when (not (:portal/closed portal))
+            :when (>= (:room/size destination 10)
+                      (count (:entity/_location destination)))]
+        #_(cond (not destination)
+              ["error" ""]
+
+              (:portal/closed portal)
+              [open portal])
+        #_[move portal-link]
+        portal-link))))
 
 (defn actions [conn character]
   (concat
-    (for [portal-link (usable-exits character)]
-      [#(move conn character (:portal.link/to portal-link))
-       (str "move " (name (:portal.link/direction portal-link)))])))
+    (when (= (:character/posture character) :posture/standing)
+      (for [portal-link (usable-exits character)]
+        [#(move conn character (:portal.link/to portal-link))
+         (str "move " (name (:portal.link/direction portal-link)))]))
+    #_(for [portal-link (exits character)]
+         (let [portal-links (:portal.link/_from (:entity/location character))]
+              (for [link portal-links
+                    :when (:portal/closed portal)]
+                   {:name (:portal/name (:portal/_links link))
+                    :direction (:portal.link/direction link)})))
+    ))
