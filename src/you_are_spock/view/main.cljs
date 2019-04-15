@@ -4,12 +4,19 @@
             [you-are-spock.model.main :as model]
             [clojure.string :as str]))
 
-(defn world-view [app-state]
+
+
+(defn stress-test-view []
+  (let []
+    )
+  )
+
+(defn room-view [app-state]
   ;; TODO: what if I'm not in a room? Inside a bag?
   (let [character (model/character @app-state)
-        actions (model/actions model/conn character)
         room (:entity/location character)
-        portal-links (:portal.link/_from room)]
+        portal-links (:portal.link/_from room)
+        actions (model/actions model/conn character)]
     [:dl
      [:dt "You are in " (:room/name room)]
      [:dd (:room/description room)]
@@ -44,4 +51,4 @@
   [:div
    [:h3 {:style {:text-align "center"}}
     "You are spock"]
-   [world-view app-state]])
+   [room-view app-state]])

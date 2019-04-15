@@ -57,7 +57,12 @@
      '[[(f)
         (or :a :b)]])
 
-(defmacro defq [relation-name args body]
+#_(defn q [rules]
+  '~(datascript-rules
+      [(datascript-rule relation-name args body)])
+  )
+
+(defmacro defrules [relation-name args body]
   `(defn ~relation-name [db# x#]
      (map #(d/entity db# %)
           (d/q '{:find [[~'?result ...]]
@@ -68,7 +73,7 @@
                    [(datascript-rule relation-name args body)])
                x#))))
 
-#_(macroexpand-1 '(defq ancestor [?x]
+#_(macroexpand-1 '(defrules ancestor [?x]
                     (or (:entity/parent ?x)
                         (:entity/parent (ancestor ?x)))))
 

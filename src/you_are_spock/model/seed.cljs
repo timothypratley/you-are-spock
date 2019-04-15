@@ -101,3 +101,18 @@
     :character/posture :posture/standing
     :character/looking-at -4
     :entity/location -9}])
+
+(defn create-ancestors []
+  [{:db/id 100
+    :character/name "Justice"
+    :entity/parent {:character/name "Mother"
+                    :entity/parent {:character/name "GrandMother"}}
+    :entity/_parent [{:character/name "Good Child"}
+                     {:character/name "Bad Child"}]}
+   {:db/id 200
+    :character/name "Orphan"}
+   {:db/id 300
+    :character/name "Chaos"
+    :entity/parent {:character/name "Loki"}
+    :entity/_parent [{:character/name "War"
+                      :entity/_parent [{:character/name "Death"}]}]}])

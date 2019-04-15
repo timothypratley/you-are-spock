@@ -20,36 +20,37 @@
   (d/create-conn schema/schema))
 
 (d/transact! conn seed/initial-world)
+(d/transact! conn (seed/create-ancestors))
 
-(doto (d/entid @conn [:character/name "D"])
+#_(doto (d/entid @conn [:character/name "D"])
   (prn "EEEE"))
 
-(u/defq ancestor [?x]
+#_(u/defq ancestor [?x]
   (or (:entity/parent ?x)
       (:entity/parent (ancestor ?x))))
 
 ;; why #{[1] [2]}
 
-(prn "TTT"
+#_(prn "TTT"
      (map :character/name
           (ancestor @conn [:character/name "D"])))
 
-(prn "TESTs" (map #(d/touch %) (ancestor @conn 6)))
+#_(prn "TESTs" (map #(d/touch %) (ancestor @conn 6)))
 
 ;; TODO: why doesn't reverse lookup work?
-(u/defq progeny [?x]
+#_(u/defq progeny [?x]
   (:entity/_parent ?x))
 
-(prn "TEST2" (progeny @conn 6))
+#_(prn "TEST2" (progeny @conn 6))
 
 
-(u/defq all-ancestor [?x ?y]
+#_(u/defq all-ancestor [?x ?y]
   (or (:entity/parent ?x)
       (:entity/parent (ancestor ?x))))
 
 
 ;; TODO: how to get all?
-(prn "FFF" (all-ancestor @conn 1))
+#_(prn "FFF" (all-ancestor @conn 1))
 
 #_(prn "TTTT"
      (d/q '{:find [?result], :where [(ancestor ?x ?result)], :in [$ % ?x]}

@@ -1,12 +1,18 @@
 (ns you-are-spock.model.schema)
 
 (def schema
-  {:entity/location {:db/valueType :db.type/ref
+  {
+   ;; abstract relation for testing purposes
+   :entity/parent {:db/valueType :db.type/ref
+                   :db/cardinality :db.cardinality/one}
+
+   :entity/location {:db/valueType :db.type/ref
                      :db/cardinality :db.cardinality/one}
 
    :character/name {:db/unique :db.unique/identity}
    :character/posture {}
-   :character/looking-at {:db/valueType :db.type/ref}
+   :character/looking-at {:db/valueType :db.type/ref
+                          :db/cardinality :db.cardinality/one}
    :character/hand {:db/isComponent true
                     :db/valueType :db.type/ref
                     :db/cardinality :db.cardinality/many}
@@ -14,9 +20,6 @@
    :character.hand/name {}
    :character.hand/holding {:db/valueType :db.type/ref
                             :db/cardinality :db.cardinality/one}
-
-   :entity/parent {:db/valueType :db.type/ref
-                   :db/cardinality :db.cardinality/one}
 
    :weapon/type {}
    :weapon/quality {}
