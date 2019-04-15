@@ -8,6 +8,8 @@
   #?(:clj [(hash x)]
      :cljs #js [(hash x)]))
 
+(defn noop [])
+
 (defn use-state
   "Returns the initial value, and a function to update it.
   On subsequent renders, will return the current state and updater.
