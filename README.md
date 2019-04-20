@@ -1,12 +1,17 @@
-# you-are-spock
+# You are Spock
 
-Spock encounters many puzzling situations which he must overcome with his only weapon: Logic.
+Spock encounters puzzling situations which he must overcome with his only weapon: Logic.
 
-[Play the game here.](https://timothypratley.github.io/you-are-spock)
+[Play the You are Spock game.](https://timothypratley.github.io/you-are-spock)
+
+![Spock eyebrow raise](https://i.gifer.com/ONxG.gif)
+
 
 ## Overview
 
-This is a game built to explore the suitability of the `entity` abstraction from DataScript.
+A game to explore the suitability of the `Entity` abstraction of DataScript.
+Built with great [justice](https://www.github.com/timothypratley/justice).
+
 
 ## Setup
 
@@ -15,13 +20,7 @@ To get an interactive development environment run:
     lein figwheel
 
 and open your browser at [localhost:3449](http://localhost:3449/).
-This will auto compile and send all changes to the browser without the
-need to reload. After the compilation process is complete, you will
-get a Browser Connected REPL. An easy way to try it is:
-
-    (js/alert "Am I connected?")
-
-and you should see an alert in the browser window.
+This will auto compile and send all changes to the browser without the need to reload.
 
 To clean all compiled files:
 
@@ -31,12 +30,14 @@ To create a production build run:
 
     lein do clean, cljsbuild once min
 
-And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL.
+And open your browser in `resources/public/index.html`.
+You will not get live reloading, nor a REPL.
+
 
 ## Deploying
 
 `./deploy.sh`
+
 
 ## License
 
