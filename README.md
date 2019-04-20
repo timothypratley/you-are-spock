@@ -4,7 +4,7 @@ Spock encounters puzzling situations which he must overcome with his only weapon
 
 [Play the You are Spock game.](https://timothypratley.github.io/you-are-spock)
 
-![Spock eyebrow raise](https://i.gifer.com/ONxG.gif)
+![Spock eyebrow raise](https://i.gifer.com/embedded/download/ONxG.gif)
 
 
 ## Overview
