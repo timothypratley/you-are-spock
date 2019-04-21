@@ -7,8 +7,7 @@
   :min-lein-version "2.7.1"
 
   :dependencies [[datascript "0.18.2"]
-                 [justice "0.0.3-alpha"]
-                 [meander/gamma "0.0.5"]
+                 [justice "0.0.4-alpha"]
                  [org.clojure/clojure "1.10.0"]
                  [org.clojure/clojurescript "1.10.520"]
                  [org.clojure/core.async  "0.4.490"]

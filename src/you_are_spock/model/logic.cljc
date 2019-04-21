@@ -1,5 +1,5 @@
 (ns you-are-spock.model.logic
-  (:require [you-are-spock.utils :as utils]
+  (:require [justice.core :as j]
             [datascript.core :as d]))
 
 (defn exits [character]
@@ -7,6 +7,7 @@
     (for [link portal-links]
       {:name (:portal/name (:portal/_links link))
        :direction (:portal.link/direction link)})))
+
 
 (defn exit? [character direction]
   [;; must not be fighting, must be standing (is fighting a posture?)

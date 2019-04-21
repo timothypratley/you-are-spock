@@ -1,10 +1,11 @@
 (ns you-are-spock.controller
   (:require [datascript.core :as d]
+            [justice.reactive :as re]
             [reagent.core :as reagent]
-            [you-are-spock.re :as re]
             [you-are-spock.model.main :as model]
             [you-are-spock.view.main :as view.main]
-            [you-are-spock.view.reactive-test :as rt]))
+            [you-are-spock.view.reactive-test :as rt]
+            [justice.core :as j]))
 
 ;; app-state is a reactive copy of db
 (defonce app-state
@@ -73,10 +74,23 @@
 
     (finally (cleanup))))
 
-(defn mount []
-  [:div
-   [test-rentity]
-   [test-rdbfn "rdbfn watching attributes" #(re/tx-contains-attribute? :entity/parent %)]
-   ;; TODO: alternate strategies for detecting change
-   #_[test-rdbfn "rdbfn watching attributes" #(re/tx-relates? #{} #_eids :entity/parent %)]
-   [view.main/main-view app-state]])
+(defn tick [app-state]
+  (prn "TICK!")
+  (doseq [c (j/q '(:character/_name _))]
+    (prn (d/touch c))))
+
+(defn start-ticker [app-state]
+  (let [id (js/setInterval (fn a-tick [] (tick app-state)) 1000)]
+    (fn stop-ticker []
+      (js/clearInterval id))))
+
+(defn root [app-state]
+  (reagent/with-let [stop-ticker (start-ticker app-state)]
+    [:div
+     #_[test-rentity]
+     #_[test-rdbfn "rdbfn watching attributes" #(re/tx-contains-attribute? :entity/parent %)]
+     ;; TODO: alternate strategies for detecting change
+     #_[test-rdbfn "rdbfn watching attributes" #(re/tx-relates? #{} #_eids :entity/parent %)]
+     [view.main/main-view app-state]]
+    (finally
+      (stop-ticker))))

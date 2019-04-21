@@ -13,6 +13,7 @@
    :character/posture {}
    :character/looking-at {:db/valueType :db.type/ref
                           :db/cardinality :db.cardinality/one}
+   ;; Hands are components, which means they get deleted if the character is deleted
    :character/hand {:db/isComponent true
                     :db/valueType :db.type/ref
                     :db/cardinality :db.cardinality/many}
