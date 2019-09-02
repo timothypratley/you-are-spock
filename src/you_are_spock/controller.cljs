@@ -11,9 +11,10 @@
 (defonce app-state
   (reagent/atom @model/conn))
 
-(d/listen! model/conn ::tx
-           (fn [tx-report]
-             (reset! app-state (:db-after tx-report))))
+(defn on-tx [tx-report]
+  (reset! app-state (:db-after tx-report)))
+
+(d/listen! model/conn ::tx on-tx)
 
 ;; hooks style
 #_(let [[value update-value] (js/React.useState nil)]
@@ -51,33 +52,32 @@
 
 (def view-character (juxt :character/name (comp :character/name :entity/parent)))
 
-(defn test-rdbfn [label relevant?]
-  (reagent/with-let
-   [a (reagent/atom (mapv
-                      #(view-character (d/entity @model/conn %))
-                      (all-characters @model/conn)))
-    on-change (fn [x]
-                (if (fn? x)
-                  (swap! a x)
-                  (reset! a x)))
-    f (fn [db]
-        (mapv
-          #(view-character (d/entity db %))
-          (all-characters db)))
-    cleanup (re/rdbfn model/conn f relevant? on-change)]
+(defn all-character-views [db]
+  (mapv
+   #(view-character (d/entity db %))
+   (all-characters db)))
 
+;; TODO: move this to justice, not used here
+(defn test-rdbfn [label relevant?]
+  (reagent/with-let [a (reagent/atom (all-character-views @model/conn))
+                     on-change (fn [x]
+                                 (reset! a x))
+                     cleanup (re/rdbfn model/conn all-character-views relevant? on-change)]
     [rt/reactive-test
      label
      @a
      (fn [e]
        (d/transact! model/conn [(randomize-parent @model/conn)]))]
-
     (finally (cleanup))))
+
+;; maybe instead of ticks, reactions should be immediate(ish), but actions take time.
 
 (defn tick [app-state]
   (prn "TICK!")
-  (doseq [c (j/q '(:character/_name _))]
-    (prn (d/touch c))))
+  (doseq [c (j/q #_'{:character/name _} '(:character/_name _))]
+    ;; do stuff!
+    ;;(d/touch c)
+    ))
 
 (defn start-ticker [app-state]
   (let [id (js/setInterval (fn a-tick [] (tick app-state)) 1000)]
@@ -86,11 +86,5 @@
 
 (defn root [app-state]
   (reagent/with-let [stop-ticker (start-ticker app-state)]
-    [:div
-     #_[test-rentity]
-     #_[test-rdbfn "rdbfn watching attributes" #(re/tx-contains-attribute? :entity/parent %)]
-     ;; TODO: alternate strategies for detecting change
-     #_[test-rdbfn "rdbfn watching attributes" #(re/tx-relates? #{} #_eids :entity/parent %)]
-     [view.main/main-view app-state]]
-    (finally
-      (stop-ticker))))
+    [view.main/main-view app-state]
+    (finally (stop-ticker))))

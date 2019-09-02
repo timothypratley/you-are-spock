@@ -1,7 +1,7 @@
 (ns you-are-spock.model.seed)
 
 (def initial-world
-  [{:enum/postures [:posture/standing :posture/crouching :posture/sitting :posture/lying-down]}
+  [{:enum/postures [:posture/standing :posture/crouching :posture/sitting :posture/lying-down :posture/flying]}
    {:enum/weapons [:weapon/axe :weapon/sword :weapon/spear :weapon/bow]}
    {:enum/exits [:direction/north :direction/south :direction/east :direction/west :direction/up :direction/down]}
    {:enum/difficulty [:difficulty/easy :difficulty/moderate :difficulty/hard]}
